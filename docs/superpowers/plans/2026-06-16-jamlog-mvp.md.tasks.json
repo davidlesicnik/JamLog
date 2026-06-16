@@ -1,0 +1,82 @@
+{
+  "planPath": "docs/superpowers/plans/2026-06-16-jamlog-mvp.md",
+  "tasks": [
+    {
+      "id": 1,
+      "subject": "Task 0: Project Scaffold",
+      "status": "pending",
+      "description": "**Goal:** Initialize monorepo with Vite+React+TS frontend and Express+TS backend.\n\n**Files:** package.json, vite.config.ts, tsconfig.json, server/tsconfig.json, src/main.tsx, src/App.tsx, index.html, .gitignore, tailwind.config.js, postcss.config.js, src/index.css, server/index.ts\n\n**Acceptance Criteria:**\n- npm run dev starts Vite on 5173\n- npm run server starts Express on 3001 with /healthz\n- TypeScript zero errors\n- Tailwind applies\n\n**Verify:** `curl http://localhost:3001/healthz` → `{\"ok\":true}`\n\n```json:metadata\n{\"files\":[\"package.json\",\"vite.config.ts\",\"tsconfig.json\",\"server/tsconfig.json\",\"src/main.tsx\",\"src/App.tsx\",\"index.html\",\".gitignore\",\"tailwind.config.js\",\"postcss.config.js\",\"src/index.css\",\"server/index.ts\"],\"verifyCommand\":\"curl http://localhost:3001/healthz\",\"acceptanceCriteria\":[\"npm run dev starts Vite on 5173\",\"npm run server starts Express on 3001 with /healthz\",\"TypeScript zero errors\",\"Tailwind applies\"],\"modelTier\":\"mechanical\"}\n```"
+    },
+    {
+      "id": 2,
+      "subject": "Task 1: Database Schema + Song API",
+      "status": "pending",
+      "blockedBy": [1],
+      "description": "**Goal:** SQLite schema + Express routes for songs (upload, list, favorite, delete).\n\n**Files:** server/db.ts, server/routes/songs.ts, server/index.ts\n\n**Acceptance Criteria:**\n- POST /api/songs/upload returns {id,title,filename}\n- GET /api/songs returns array\n- PATCH /api/songs/:id/favorite toggles\n- DELETE /api/songs/:id removes row and file\n\n**Verify:** `curl -s http://localhost:3001/api/songs`\n\n```json:metadata\n{\"files\":[\"server/db.ts\",\"server/routes/songs.ts\",\"server/index.ts\"],\"verifyCommand\":\"curl -s http://localhost:3001/api/songs\",\"acceptanceCriteria\":[\"POST /api/songs/upload returns {id,title,filename}\",\"GET /api/songs returns array\",\"PATCH /api/songs/:id/favorite toggles\",\"DELETE /api/songs/:id removes row and file\"],\"modelTier\":\"standard\"}\n```"
+    },
+    {
+      "id": 3,
+      "subject": "Task 2: Progress API",
+      "status": "pending",
+      "blockedBy": [2],
+      "description": "**Goal:** Express routes to get/upsert progress per song.\n\n**Files:** server/routes/progress.ts, server/index.ts\n\n**Acceptance Criteria:**\n- GET /api/progress/:songId returns row or default\n- PUT /api/progress/:songId upserts\n- 404 for missing songId\n\n**Verify:** `curl -s http://localhost:3001/api/progress/1`\n\n```json:metadata\n{\"files\":[\"server/routes/progress.ts\",\"server/index.ts\"],\"verifyCommand\":\"curl -s http://localhost:3001/api/progress/1\",\"acceptanceCriteria\":[\"GET /api/progress/:songId returns row or default\",\"PUT /api/progress/:songId upserts\",\"404 for missing songId\"],\"modelTier\":\"mechanical\"}\n```"
+    },
+    {
+      "id": 4,
+      "subject": "Task 3: Shared Types + API Client",
+      "status": "pending",
+      "blockedBy": [3],
+      "description": "**Goal:** TypeScript interfaces and typed fetch wrappers.\n\n**Files:** src/types.ts, src/api.ts\n\n**Acceptance Criteria:**\n- types.ts exports Song, Progress, ProgressStatus\n- api.ts exports getSongs, uploadSong, toggleFavorite, deleteSong, getProgress, upsertProgress\n- tsc --noEmit passes\n\n**Verify:** `npx tsc --noEmit`\n\n```json:metadata\n{\"files\":[\"src/types.ts\",\"src/api.ts\"],\"verifyCommand\":\"npx tsc --noEmit\",\"acceptanceCriteria\":[\"types.ts exports Song, Progress, ProgressStatus\",\"api.ts exports all 6 functions\",\"tsc --noEmit passes\"],\"modelTier\":\"mechanical\"}\n```"
+    },
+    {
+      "id": 5,
+      "subject": "Task 4: Library Page",
+      "status": "pending",
+      "blockedBy": [4],
+      "description": "**Goal:** Library page with song list, search/filter, favorite toggle, delete, upload zone.\n\n**Files:** src/components/Library/LibraryPage.tsx, src/components/Library/SongCard.tsx, src/components/Library/UploadZone.tsx, src/App.tsx\n\n**Acceptance Criteria:**\n- Song list renders\n- Search filters by title\n- Favorites toggle works\n- Upload refreshes list\n- Delete with confirmation\n- Song title navigates to /viewer/:id\n\n**Verify:** Manual test\n\n```json:metadata\n{\"files\":[\"src/components/Library/LibraryPage.tsx\",\"src/components/Library/SongCard.tsx\",\"src/components/Library/UploadZone.tsx\",\"src/App.tsx\"],\"verifyCommand\":\"npm run dev\",\"acceptanceCriteria\":[\"Song list renders\",\"Search filters by title\",\"Favorites toggle works\",\"Upload refreshes list\",\"Delete with confirmation\",\"Song title navigates to /viewer/:id\"],\"modelTier\":\"standard\"}\n```"
+    },
+    {
+      "id": 6,
+      "subject": "Task 5: AlphaTab Wrapper + Song Viewer Shell",
+      "status": "pending",
+      "blockedBy": [4, 5],
+      "description": "**Goal:** Viewer page with alphaTab rendering, play/pause/stop, speed control.\n\n**Files:** src/components/Viewer/AlphaTabWrapper.tsx, src/hooks/useAlphaTab.ts, src/components/Viewer/PlaybackControls.tsx, src/components/Viewer/ViewerPage.tsx, src/App.tsx\n\n**Acceptance Criteria:**\n- Score renders in browser\n- Play/Pause/Stop work\n- Speed 50/75/100% adjusts tempo\n- Loading state shown\n\n**Verify:** Manual test with real GP5 file\n\n```json:metadata\n{\"files\":[\"src/components/Viewer/AlphaTabWrapper.tsx\",\"src/hooks/useAlphaTab.ts\",\"src/components/Viewer/PlaybackControls.tsx\",\"src/components/Viewer/ViewerPage.tsx\",\"src/App.tsx\"],\"verifyCommand\":\"npm run dev\",\"acceptanceCriteria\":[\"Score renders in browser\",\"Play/Pause/Stop work\",\"Speed 50/75/100% adjusts tempo\",\"Loading state shown\"],\"modelTier\":\"frontier\"}\n```"
+    },
+    {
+      "id": 7,
+      "subject": "Task 6: Metronome",
+      "status": "pending",
+      "blockedBy": [6],
+      "description": "**Goal:** Web Audio API metronome synced to score BPM.\n\n**Files:** src/components/Viewer/Metronome.tsx, src/components/Viewer/ViewerPage.tsx\n\n**Acceptance Criteria:**\n- Click audible when enabled\n- BPM synced to score tempo\n- Works independent of playback\n- AudioContext closed on unmount\n\n**Verify:** Manual audio test\n\n```json:metadata\n{\"files\":[\"src/components/Viewer/Metronome.tsx\",\"src/components/Viewer/ViewerPage.tsx\"],\"verifyCommand\":\"npm run dev\",\"acceptanceCriteria\":[\"Click audible when enabled\",\"BPM synced to score tempo\",\"Works independent of playback\",\"AudioContext closed on unmount\"],\"modelTier\":\"standard\"}\n```"
+    },
+    {
+      "id": 8,
+      "subject": "Task 7: Loop Control",
+      "status": "pending",
+      "blockedBy": [6],
+      "description": "**Goal:** Bar range loop with start/end inputs and enable toggle.\n\n**Files:** src/components/Viewer/LoopControl.tsx, src/components/Viewer/ViewerPage.tsx\n\n**Acceptance Criteria:**\n- Bar range inputs visible\n- Loop enable sets playbackRange ticks\n- Loop disable clears playbackRange\n- Inputs disabled when score not loaded\n\n**Verify:** Manual loop test\n\n```json:metadata\n{\"files\":[\"src/components/Viewer/LoopControl.tsx\",\"src/components/Viewer/ViewerPage.tsx\"],\"verifyCommand\":\"npm run dev\",\"acceptanceCriteria\":[\"Bar range inputs visible\",\"Loop enable sets playbackRange ticks\",\"Loop disable clears playbackRange\",\"Inputs disabled when score not loaded\"],\"modelTier\":\"standard\"}\n```"
+    },
+    {
+      "id": 9,
+      "subject": "Task 8: Section Jumper",
+      "status": "pending",
+      "blockedBy": [6],
+      "description": "**Goal:** Section dropdown to seek to named sections in the score.\n\n**Files:** src/components/Viewer/SectionJumper.tsx, src/components/Viewer/ViewerPage.tsx\n\n**Acceptance Criteria:**\n- Dropdown visible with ≥1 section\n- Hidden with no sections\n- Selecting section seeks to tick position\n\n**Verify:** Manual test with sectioned GP file\n\n```json:metadata\n{\"files\":[\"src/components/Viewer/SectionJumper.tsx\",\"src/components/Viewer/ViewerPage.tsx\"],\"verifyCommand\":\"npm run dev\",\"acceptanceCriteria\":[\"Dropdown visible with ≥1 section\",\"Hidden with no sections\",\"Selecting section seeks to tick position\"],\"modelTier\":\"mechanical\"}\n```"
+    },
+    {
+      "id": 10,
+      "subject": "Task 9: Progress Panel",
+      "status": "pending",
+      "blockedBy": [6],
+      "description": "**Goal:** Side panel for status, BPM, notes, last practiced.\n\n**Files:** src/components/Progress/ProgressPanel.tsx, src/components/Viewer/ViewerPage.tsx\n\n**Acceptance Criteria:**\n- Status dropdown works\n- BPM and notes auto-save on blur\n- Mark practiced button updates lastPracticed\n- Changes persist on page refresh\n\n**Verify:** Manual test: set progress, refresh\n\n```json:metadata\n{\"files\":[\"src/components/Progress/ProgressPanel.tsx\",\"src/components/Viewer/ViewerPage.tsx\"],\"verifyCommand\":\"npm run dev\",\"acceptanceCriteria\":[\"Status dropdown works\",\"BPM and notes auto-save on blur\",\"Mark practiced button updates lastPracticed\",\"Changes persist on page refresh\"],\"modelTier\":\"standard\"}\n```"
+    },
+    {
+      "id": 11,
+      "subject": "Task 10: Commit Full Implementation",
+      "status": "pending",
+      "blockedBy": [5, 6, 7, 8, 9, 10],
+      "description": "**Goal:** Single initial commit for all JamLog MVP files.\n\n**Files:** All files.\n\n**Acceptance Criteria:**\n- git status clean after commit\n- Conventional commits format\n\n**Verify:** `git log --oneline -1`\n\n```json:metadata\n{\"files\":[],\"verifyCommand\":\"git log --oneline -1\",\"acceptanceCriteria\":[\"git status clean after commit\",\"Conventional commits format\"],\"modelTier\":\"mechanical\"}\n```"
+    }
+  ],
+  "lastUpdated": "2026-06-16T00:00:00.000Z"
+}
