@@ -3,14 +3,15 @@ import { useAlphaTab, type AlphaTabHandle } from '../../hooks/useAlphaTab'
 
 interface Props {
   fileUrl: string | null
+  staveProfile?: number
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onScoreLoaded?: (score: any) => void
   onHandleChange: (handle: AlphaTabHandle) => void
 }
 
-export default function AlphaTabWrapper({ fileUrl, onScoreLoaded, onHandleChange }: Props) {
+export default function AlphaTabWrapper({ fileUrl, staveProfile, onScoreLoaded, onHandleChange }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const handle = useAlphaTab(containerRef, fileUrl, onScoreLoaded)
+  const handle = useAlphaTab(containerRef, fileUrl, onScoreLoaded, staveProfile)
 
   // Run after every render to notify parent of handle state changes.
   // useEffect avoids "updating during render" React warning.
