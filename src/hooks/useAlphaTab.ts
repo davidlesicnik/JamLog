@@ -17,7 +17,8 @@ export function useAlphaTab(
   fileUrl: string | null,
   // Callback fires synchronously inside the scoreLoaded event, before isLoaded=true.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onScoreLoaded?: (score: any) => void
+  onScoreLoaded?: (score: any) => void,
+  staveProfile?: number
 ): AlphaTabHandle {
   const apiRef = useRef<unknown>(null)
   const [isLoaded, setIsLoaded] = useState(false)
@@ -47,7 +48,7 @@ export function useAlphaTab(
           soundFont: soundFontUrl,
           scrollMode: 1,
         },
-        display: { staveProfile: 1 },
+        display: { staveProfile: staveProfile ?? 1 },
       })
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -79,6 +80,15 @@ export function useAlphaTab(
       setPlaybackState('stopped')
     }
   }, [containerRef, fileUrl])
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const api = apiRef.current as any
+    if (!api || staveProfile === undefined) return
+    api.settings.display.staveProfile = staveProfile
+    api.updateSettings()
+    api.render()
+  }, [staveProfile])
 
   // Memoize so handle reference only changes when reactive state changes.
   // Callbacks use apiRef (not captured api variable) to always reach current instance.

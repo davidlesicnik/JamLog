@@ -5,6 +5,7 @@ import type { Song } from '../../types'
 import type { AlphaTabHandle, PlaybackState } from '../../hooks/useAlphaTab'
 import AlphaTabWrapper from './AlphaTabWrapper'
 import PlaybackControls from './PlaybackControls'
+import NotationToggle from './NotationToggle'
 import Metronome from './Metronome'
 import LoopControl from './LoopControl'
 import SectionJumper from './SectionJumper'
@@ -17,6 +18,11 @@ export default function ViewerPage() {
   const [song, setSong] = useState<Song | null>(null)
   const [songError, setSongError] = useState<string | null>(null)
   const [speed, setSpeed] = useState(1)
+  const [staveProfile, setStaveProfile] = useState<number>(() => {
+    const saved = localStorage.getItem('jamlog_notation_profile')
+    const n = Number(saved)
+    return [1, 2, 3].includes(n) ? n : 1
+  })
 
   // Reactive alphaTab state — updated via onHandleChange each time handle changes
   const [isLoaded, setIsLoaded] = useState(false)
@@ -72,6 +78,11 @@ export default function ViewerPage() {
     handleRef.current?.setSpeed(v)
   }
 
+  const handleNotationChange = (v: number) => {
+    setStaveProfile(v)
+    localStorage.setItem('jamlog_notation_profile', String(v))
+  }
+
   const handleJump = (tick: number) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const api = handleRef.current?.api as any
@@ -122,6 +133,11 @@ export default function ViewerPage() {
             onStop={() => handleRef.current?.stop()}
             onSpeedChange={handleSpeed}
           />
+          <NotationToggle
+            value={staveProfile}
+            isLoaded={isLoaded}
+            onChange={handleNotationChange}
+          />
           <Metronome bpm={metronomeBpm} enabled={metronomeOn} onToggle={() => setMetronomeOn(v => !v)} />
           <SectionJumper sections={sections} isLoaded={isLoaded} onJump={handleJump} />
           <LoopControl
@@ -135,6 +151,7 @@ export default function ViewerPage() {
           />
           <AlphaTabWrapper
             fileUrl={fileUrl}
+            staveProfile={staveProfile}
             onScoreLoaded={onScoreLoaded}
             onHandleChange={onHandleChange}
           />
